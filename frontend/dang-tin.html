@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng Tin Mới - EasyRoom</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container"><a class="navbar-brand fw-bold" href="trang-chu.html">EasyRoom</a></div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-header bg-primary text-white p-4">
+                        <h4 class="mb-0 fw-bold"><i class="fa-solid fa-cloud-arrow-up me-2"></i> ĐĂNG TIN PHÒNG TRỌ MỚI</h4>
+                    </div>
+                    <div class="card-body p-5">
+                        <form action="ThemPhongServlet" method="POST" enctype="multipart/form-data" class="row g-4">
+                            <h5 class="fw-bold text-primary border-bottom pb-2">1. Thông tin bài đăng</h5>
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Tiêu đề (Ít nhất 10 ký tự)</label>
+                                <input type="text" name="tieu_de" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Giá thuê (VNĐ/tháng)</label>
+                                <input type="number" name="gia_thue" class="form-control" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Diện tích (m²)</label>
+                                <input type="number" name="dien_tich" class="form-control" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Loại phòng</label>
+                                <select name="ma_loaiphong" class="form-select">
+                                    <option value="1">Phòng trọ giá rẻ</option>
+                                    <option value="2">Chung cư mini</option>
+                                    <option value="3">Nhà nguyên căn</option>
+                                </select>
+                            </div>
+
+                            <h5 class="fw-bold text-primary border-bottom pb-2 mt-5">2. Địa chỉ & Mô tả</h5>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Tỉnh/Thành</label>
+                                <select name="tinh" class="form-select"><option value="Hà Nội">Hà Nội</option><option value="Hải Phòng">Hải Phòng</option></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Quận/Huyện</label>
+                                <input type="text" name="quan" class="form-control" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Phường/Xã & Số nhà chi tiết</label>
+                                <input type="text" name="diachi_ct" class="form-control" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Mô tả chi tiết phòng trọ</label>
+                                <textarea name="mo_ta" class="form-control" rows="5" placeholder="Thông tin về điện nước, nội thất..."></textarea>
+                            </div>
+
+                            <h5 class="fw-bold text-primary border-bottom pb-2 mt-5">3. Hình ảnh bài đăng</h5>
+                            <div class="col-12">
+                                <div class="bg-light p-4 border border-dashed rounded text-center">
+                                    <i class="fa-solid fa-images fa-3x text-muted mb-3"></i>
+                                    <input type="file" name="anh_phong" class="form-control" multiple accept="image/*">
+                                    <small class="text-muted d-block mt-2">Chọn ít nhất 1 ảnh rõ nét của phòng trọ.</small>
+                                </div>
+                            </div>
+
+                            <div class="col-12 text-center mt-5">
+                                <button type="submit" class="btn btn-success btn-lg px-5 fw-bold py-3 shadow">ĐĂNG TIN NGAY</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
