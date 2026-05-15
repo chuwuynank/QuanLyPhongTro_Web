@@ -2,15 +2,15 @@ import { IsEmail, IsNotEmpty, IsString, MinLength, IsOptional, IsEnum } from 'cl
 import { UserRole } from '@prisma/client';
 
 export class RegisterDto {
-  @IsEmail({}, { message: 'Email không hợp lệ' })
-  @IsNotEmpty()
+  @IsEmail({ message: 'Email không hợp lệ' })
+  @IsNotEmpty({ message: 'Email không được để trống' })
   email: string;
 
-  @IsNotEmpty()
-  @MinLength(6, { message: 'Mật khẩu phải ít nhất 6 ký tự' })
+  @IsNotEmpty({ message: 'Mật khẩu không được để trống' })
+  @MinLength(6, { message: 'Mật khẩu phải có ít nhất 6 ký tự' })
   password: string;
 
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Họ tên không được để trống' })
   @IsString()
   fullName: string;
 
@@ -20,5 +20,5 @@ export class RegisterDto {
 
   @IsOptional()
   @IsEnum(UserRole)
-  role?: UserRole;
+  role?: UserRole = UserRole.TENANT;
 }
