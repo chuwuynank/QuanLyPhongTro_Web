@@ -1,62 +1,54 @@
-import {
+import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
+import { PrismaService } from '../../prisma/prisma.service';
+import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
-  async register(dto: any) {
-    const existed = await this.prisma.user.findFirst({
-      where: {
-        OR: [
-          { username: dto.username },
-          { phone: dto.phone },
-        ],
-      },
+@Injectable()
+export class AuthService {
+  constructor(
+    private prisma: PrismaService,
+    private jwtService: JwtService,
+  ) {}
+
+  async register(data: { email: string; password: string; fullName: string; phone?: string; role?: string }) {
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email: data.email },
     });
 
-    if (existed) {
-      throw new BadRequestException('User already exists');
-    }
+    if (existingUser) throw new ConflictException('Email đã tồn tại');
 
-    const hashedPassword = await bcrypt.hash(dto.password, 10);
+    const hashedPassword = await bcrypt.hash(data.password, 10);
 
     const user = await this.prisma.user.create({
       data: {
-        username: dto.username,
+        email: data.email,
         password: hashedPassword,
-        fullName: dto.fullName,
-        phone: dto.phone,
-        role: dto.role,
+        fullName: data.fullName,
+        phone: data.phone,
+        role: (data.role as any) || 'TENANT',
       },
     });
 
+    delete (user as any).password;
     return user;
   }
 
-  async login(dto: any) {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        username: dto.username,
-      },
-    });
+  async login(email: string, password: string) {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (!user) throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
 
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
 
-    const matched = await bcrypt.compare(
-      dto.password,
-      user.password,
-    );
-
-    if (!matched) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
-
-    const accessToken = this.jwtService.sign({
-      sub: user.id,
-      role: user.role,
-    });
-
+    const payload = { sub: user.id, email: user.email, role: user.role };
     return {
-      accessToken,
-      user,
+      accessToken: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        email: user.email,
+        fullName: user.fullName,
+        role: user.role,
+      },
     };
   }
 }
