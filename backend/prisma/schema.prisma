@@ -1,25 +1,29 @@
+// ====================== PRISMA SCHEMA - NhaTroTot ======================
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "mysql"          // đổi thành "postgresql" nếu dùng Postgres
   url      = env("DATABASE_URL")
 }
 
-// Enum
+// ====================== ENUMS ======================
+enum UserRole {
+  TENANT     // Người thuê
+  LANDLORD   // Chủ trọ
+  ADMIN
+}
+
 enum RoomStatus {
   AVAILABLE
   RENTED
   MAINTENANCE
+  HIDDEN
 }
 
-enum UserRole {
-  TENANT
-  LANDLORD
-  ADMIN
-}
-
+// ====================== MODELS ======================
 
 model User {
   id            String    @id @default(uuid())
@@ -27,14 +31,129 @@ model User {
   password      String
   fullName      String
   phone         String?
+  avatar        String?
   role          UserRole  @default(TENANT)
-  rooms         Room[]    // Phòng do chủ trọ đăng
+  isActive      Boolean   @default(true)
+
+  // Quan hệ
+  ownedRooms    Room[]    @relation("RoomOwner")     // Phòng do mình đăng
+  reviews       Review[]  @relation("ReviewAuthor")
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
+  @@map("users")
+}
+
+model Address {
+  id        String  @id @default(uuid())
+  province  String  // Tỉnh/Thành phố
+  district  String  // Quận/Huyện
+  ward      String  // Phường/Xã
+  street    String? // Đường cụ thể
+  latitude  Float?
+  longitude Float?
+
+  rooms     Room[]
+
+  @@map("addresses")
 }
 
 model RoomType {
   id          String @id @default(uuid())
-  name        String @unique  // ví dụ: Phòng trọ, Studio, Chung cư mini, Nhà nguyên căn
+  name        String @unique  // Ví dụ: "Phòng trọ", "Studio", "Chung cư mini", "Nhà nguyên căn"
+  description String?
+
   rooms       Room[]
+
+  @@map("room_types")
+}
+
+model Amenity {
+  id          String        @id @default(uuid())
+  name        String        @unique
+  icon        String?       // ví dụ: wifi, air-conditioner...
+  description String?
+
+  roomAmenities RoomAmenity[]
+
+  @@map("amenities")
+}
+
+model Room {
+  id          String      @id @default(uuid())
+  title       String
+  description String?
+  price       Float
+  area        Float       // diện tích m²
+  status      RoomStatus  @default(AVAILABLE)
+
+  // Foreign keys
+  ownerId     String
+  addressId   String
+  roomTypeId  String
+
+  owner       User        @relation("RoomOwner", fields: [ownerId], references: [id])
+  address     Address     @relation(fields: [addressId], references: [id])
+  roomType    RoomType    @relation(fields: [roomTypeId], references: [id])
+
+  images      RoomImage[]
+  amenities   RoomAmenity[]
+  reviews     Review[]
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("rooms")
+}
+
+model RoomImage {
+  id        String @id @default(uuid())
+  roomId    String
+  imageUrl  String
+  isMain    Boolean @default(false)   // Ảnh chính
+
+  room      Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  @@map("room_images")
+}
+
+model RoomAmenity {
+  roomId     String
+  amenityId  String
+
+  room       Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  amenity    Amenity  @relation(fields: [amenityId], references: [id])
+
+  @@id([roomId, amenityId])
+  @@map("room_amenities")
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  rating     Int      // 1-5 sao
+  comment    String?
+  authorId   String
+  roomId     String
+
+  author     User     @relation("ReviewAuthor", fields: [authorId], references: [id])
+  room       Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime @default(now())
+
+  @@map("reviews")
+}
+
+// ====================== Optional: Saved Room (Yêu thích) ======================
+model SavedRoom {
+  id        String @id @default(uuid())
+  userId    String
+  roomId    String
+  createdAt DateTime @default(now())
+
+  user      User   @relation(fields: [userId], references: [id])
+  room      Room   @relation(fields: [roomId], references: [id])
+
+  @@unique([userId, roomId])
+  @@map("saved_rooms")
 }
