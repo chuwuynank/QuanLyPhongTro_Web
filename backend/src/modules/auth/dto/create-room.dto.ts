@@ -16,16 +16,16 @@ class AddressDto {
 }
 
 export class CreateRoomDto {
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Tiêu đề không được để trống' })
   title: string;
 
   @IsOptional()
   description?: string;
 
-  @IsNumber()
+  @IsNumber({}, { message: 'Giá phải là số' })
   price: number;
 
-  @IsNumber()
+  @IsNumber({}, { message: 'Diện tích phải là số' })
   area: number;
 
   @IsNotEmpty()
@@ -41,5 +41,5 @@ export class CreateRoomDto {
 
   @IsArray()
   @IsOptional()
-  imageUrls?: string[];   
+  imageUrls?: string[];
 }
