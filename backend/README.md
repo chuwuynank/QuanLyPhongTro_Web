@@ -13,13 +13,14 @@ Backend cho website tìm và cho thuê phòng trọ sử dụng **NestJS + Prism
 
 ---
 
-## 🚀 Hướng dẫn cài đặt & chạy
+## Hướng dẫn cài đặt & chạy
 
 ### 1. Cài đặt dependencies
 
 ```bash
 npm install
-2. Cấu hình Database
+```
+### 2. Cấu hình Database
 Tạo file .env ở thư mục gốc với nội dung sau:
 env# Database
 DATABASE_URL="mysql://root:your_password@localhost:3306/nhatrotot"
@@ -30,7 +31,7 @@ JWT_SECRET=nhatrotot-super-secret-key-2026
 # Port
 PORT=3000
 Lưu ý: Thay your_password bằng mật khẩu MySQL của bạn.
-3. Tạo Database và Migrate
+### 3. Tạo Database và Migrate
 Bash# Tạo database nhatrotot trên MySQL trước (nếu chưa có)
 
 # Generate Prisma Client
@@ -41,13 +42,13 @@ npx prisma db push
 
 # (Tùy chọn) Mở giao diện xem database
 npx prisma studio
-4. Chạy Backend
+### 4. Chạy Backend
 Bash# Chạy ở chế độ development (khuyến nghị)
 npm run start:dev
 Server sẽ chạy tại: http://localhost:3000
 Swagger UI (xem API): http://localhost:3000/api
 
-📌 Các API chính
+### 📌 Các API chính
 Auth
 
 POST /auth/register — Đăng ký tài khoản
@@ -68,7 +69,7 @@ minPrice, maxPrice — Lọc theo giá
 roomTypeId
 
 
-📁 Cấu trúc thư mục chính
+### 📁 Cấu trúc thư mục chính
 textsrc/
 ├── modules/
 │   ├── auth/
@@ -81,7 +82,7 @@ textsrc/
 ├── dto/
 └── main.ts
 
-🛠 Công nghệ sử dụng
+### 🛠 Công nghệ sử dụng
 
 NestJS
 Prisma ORM
@@ -91,7 +92,7 @@ Class-validator
 Swagger
 
 
-⚠️ Lưu ý quan trọng
+### ⚠️ Lưu ý quan trọng
 
 Luôn chạy npx prisma generate sau khi sửa schema.prisma
 Tạo thư mục uploads/rooms để lưu ảnh (nếu dùng upload sau này)
