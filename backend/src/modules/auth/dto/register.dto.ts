@@ -1,25 +1,24 @@
-import {
-  IsEnum,
-  IsNotEmpty,
-  IsString,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength, IsOptional, IsEnum } from 'class-validator';
+import { UserRole } from '@prisma/client';
 
 export class RegisterDto {
-  @IsString()
+  @IsEmail({}, { message: 'Email không hợp lệ' })
   @IsNotEmpty()
-  username: string;
+  email: string;
 
-  @IsString()
-  @MinLength(6)
+  @IsNotEmpty()
+  @MinLength(6, { message: 'Mật khẩu phải ít nhất 6 ký tự' })
   password: string;
 
+  @IsNotEmpty()
   @IsString()
   fullName: string;
 
+  @IsOptional()
   @IsString()
-  phone: string;
+  phone?: string;
 
-  @IsEnum(['LANDLORD', 'TENANT'])
-  role: 'LANDLORD' | 'TENANT';
+  @IsOptional()
+  @IsEnum(UserRole)
+  role?: UserRole;
 }
