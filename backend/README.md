@@ -30,9 +30,11 @@ JWT_SECRET=nhatrotot-super-secret-key-2026
 
 # Port
 PORT=3000
+
 Lưu ý: Thay your_password bằng mật khẩu MySQL của bạn.
 ### 3. Tạo Database và Migrate
-Bash# Tạo database nhatrotot trên MySQL trước (nếu chưa có)
+``` bash
+Tạo database nhatrotot trên MySQL trước (nếu chưa có)
 
 # Generate Prisma Client
 npx prisma generate
@@ -42,9 +44,12 @@ npx prisma db push
 
 # (Tùy chọn) Mở giao diện xem database
 npx prisma studio
+```
 ### 4. Chạy Backend
-Bash# Chạy ở chế độ development (khuyến nghị)
+```bash
+Chạy ở chế độ development (khuyến nghị)
 npm run start:dev
+```
 Server sẽ chạy tại: http://localhost:3000
 Swagger UI (xem API): http://localhost:3000/api
 
@@ -70,6 +75,7 @@ roomTypeId
 
 
 ### 📁 Cấu trúc thư mục chính
+```bash
 textsrc/
 ├── modules/
 │   ├── auth/
@@ -81,7 +87,7 @@ textsrc/
 │       └── jwt-auth.guard.ts
 ├── dto/
 └── main.ts
-
+```
 ### 🛠 Công nghệ sử dụng
 
 NestJS
